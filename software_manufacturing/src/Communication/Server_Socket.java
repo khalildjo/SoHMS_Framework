@@ -11,14 +11,14 @@ import org.java_websocket.server.WebSocketServer;
 import org.json.JSONException;
 
 import Application.Initialization;
-public class ServerSocket extends WebSocketServer{
+public class Server_Socket extends WebSocketServer{
 
     private static int TCP_PORT = 8003;
     private List<WebSocket> socketsIHM;
     private List<String> messages;
 
 
-	public ServerSocket() throws IOException
+	public Server_Socket() throws IOException
 	{
         super(new InetSocketAddress(TCP_PORT));
         socketsIHM = new ArrayList<WebSocket>();

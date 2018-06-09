@@ -5,46 +5,45 @@ import java.util.HashSet;
 import DirectoryFacilitator.DirectoryFacilitator;
 
 
-public class PalletDefaultBehaviour extends Thread {
+public class TransporterDefaultBehaviour extends Thread {
 	
 	//Attributes
-	private Transporter pallet;	
+	private Transporter t;	
 
 	//Getters and Setters
     public Transporter getPallet() {
-		return pallet;
+		return t;
 	}
 
 
-	public void setPallet(Transporter pallet) {
-		this.pallet = pallet;
+	public void setPallet(Transporter t) {
+		this.t = t;
 	}
 
 
 	//CONSTRUCTOR
-	public PalletDefaultBehaviour(Transporter pallet) {
-		this.pallet= pallet;
+	public TransporterDefaultBehaviour(Transporter t) {
+		this.t= t;
 	}
    
 	
 	// METHODS
 	@Override
 	public void run() {
-		while(pallet!= null){  // condition to eliminate thread
+		while(t!= null){  // condition to eliminate thread
 			//Take charge of Pallet trajectory
-			while(pallet.associatedPH==null){
-				//System.out.println("== PalletDefaultBehavior Pallet "+ pallet._RFID+ " BIP 4");
-
+			while(t.associatedPH==null){
+				//System.out.println("== PalletDefaultBehavior Pallet "+ pallet._RFID+ " BIP 4")
 				//Request Actions while Blocked
-				if(pallet.portStatus== "Blocked"){
+				if(t.portStatus== "Blocked"){
 					//System.out.println("== PalletDefaultBehavior Pallet "+ pallet._RFID+ " BIP 5");
-					requestDefaultAction(pallet.actualPort);
+					requestDefaultAction(t.actualPort);
 				}
 				else {
-					synchronized (pallet) {
+					synchronized (t) {
 						try {
 							//System.out.println("== PalletDefaultBehavior Pallet "+ pallet._RFID+ " waiting");
-							pallet.wait();//Wait for changes in the Pallet 
+							t.wait();//Wait for changes in the Pallet 
 							//System.out.println("== PalletDefaultBehavior Pallet "+ pallet._RFID+ " ended waiting");
 						} catch (InterruptedException e) {
 							e.printStackTrace();
@@ -55,8 +54,8 @@ public class PalletDefaultBehaviour extends Thread {
 				}
 				//System.out.println("== PalletDefaultBehavior Pallet "+ pallet._RFID+ " BIP 3");
 			}// There is a PH associated
-			pallet.waitPalletLiberation();	// will wait to re take control	
-			System.out.println("Pallet "+ pallet._RFID+" Liberated!");
+			t.waitPalletLiberation();	// will wait to re take control	
+			System.out.println("Pallet "+t._RFID+" Liberated!");
 	}//end While
  }//end run
 //---------------------------------------------------------	
@@ -68,12 +67,12 @@ public class PalletDefaultBehaviour extends Thread {
 		for (ResourceHolon rh : portOwners) {
 			//System.out.println("PalletDefaultBehaviour: rh "+rh.getName()+" NbExec="+rh.roh.numOfCurrentExecutions);
 			// Check that there is still no PH assigned
-			if(pallet.associatedPH!= null) break; 
+			if(t.associatedPH!= null) break; 
 			  	// Request Transfer
-				 newPort = rh.roh.requestDefaultTransfer(pallet, port);
+				 newPort = rh.roh.requestDefaultTransfer(t, port);
 				// If successful transfer
 				 if(newPort!= null){
-					pallet.actualPort= newPort;
+					t.actualPort= newPort;
 					break; // if null then ask another port owner for its default action.
 			 	}
 		}//end for

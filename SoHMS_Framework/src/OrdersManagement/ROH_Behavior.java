@@ -11,6 +11,7 @@ public abstract class ROH_Behavior{
 
 	//Attributes
 	protected ResourceHolon rh;
+	public Object client;
 
 	//Getters and Setters
 	public ResourceHolon getRh() {

@@ -13,11 +13,6 @@ public class Protocol_FieldNotifications {
 			
 			case "Pallet Location":
 				
-				//TODO  extract the content and set the pallet location
-				//Find the Pallet
-				//Change its actualPosition
-				//Change its status
-				
 				break;
 			case "Service Ack":
 				//TODO

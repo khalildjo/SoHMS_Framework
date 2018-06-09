@@ -11,13 +11,13 @@ public class Transporter {
 	public String actualPort;
 	public String portStatus;
 	public ProductHolon associatedPH;
-	public PalletDefaultBehaviour defaultBehavior;
+	public TransporterDefaultBehaviour defaultBehavior;
 	public int _RFID; 
 	
 //CONSTRUCTORS-------------------------------
 	public Transporter(){
 	//Associate a  Default behavior to the pallet 
-		defaultBehavior = new PalletDefaultBehaviour(this);
+		defaultBehavior = new TransporterDefaultBehaviour(this);
 		defaultBehavior.start();
 	}
 //------------------------------------------------
@@ -150,10 +150,10 @@ public synchronized void upDatePosition(String port) {
 		public void setAssociatedPH(ProductHolon associatedPH) {
 			this.associatedPH = associatedPH;
 		}
-		public PalletDefaultBehaviour getDefaultBehavior() {
+		public TransporterDefaultBehaviour getDefaultBehavior() {
 			return defaultBehavior;
 		}
-		public void setDefaultBehavior(PalletDefaultBehaviour defaultBehavior) {
+		public void setDefaultBehavior(TransporterDefaultBehaviour defaultBehavior) {
 			this.defaultBehavior = defaultBehavior;
 		}
 		public int get_RFID() {

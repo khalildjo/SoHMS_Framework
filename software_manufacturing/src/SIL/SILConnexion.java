@@ -8,19 +8,14 @@ import java.net.Socket;
 import Crosscutting.*;
 
 
-/**
- * It Requests Connexion with the Field and listens to the commands to add them in the Notifications Inbox.
- * Just as in HMI.comm.ConnexionRequestListener
- * @author Francisco
- */
 public class SILConnexion extends Thread {
 
 	//ATTRIBUTS-------------------------------
 	protected int remotePort;
 	protected String remoteIP;
 	public Socket socket = null;
-	public OutBoxSender commandSender;
-	public NotificationReader notificationReader;
+	//public OutBoxSender commandSender;
+	//public NotificationReader notificationReader;
 	public Boolean _connexion ; 
 
 	//Afficher erreur
@@ -38,6 +33,7 @@ public class SILConnexion extends Thread {
 		this.remoteIP= remoteIP;
 	}
 
+	
 	//PUBLIC METHODS-------------------------------
 	public void run(){
 		System.out.println("ConexionRequest is Launched..");
@@ -67,10 +63,6 @@ public class SILConnexion extends Thread {
 
 					String msg= input.readLine(); // reads the message ( this is a blocking function so must be in different thread)
 
-					synchronized (notificationReader.inBoxBuffer) {
-		//				notificationReader.inBoxBuffer.add(msg); // add the Message to the InbOX
-						notificationReader.inBoxBuffer.notify(); // notify that there is a message
-					} 
 				}
 
 				//Close  Socket
@@ -91,9 +83,5 @@ public class SILConnexion extends Thread {
 			e.printStackTrace();
 		}		
 	}
-	public boolean isInitialized(){
-		if(notificationReader!=null && commandSender!=null)return true;
-		else return false;
-
-	} 
+	
 }

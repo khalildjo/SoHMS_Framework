@@ -10,7 +10,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 public class BufferedRH extends ResourceHolon{
-	
 	//ATTRIBUTS-------------------------------
 		private int capacity;
 		private int miliPerUnit;

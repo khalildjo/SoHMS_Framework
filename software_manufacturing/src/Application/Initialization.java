@@ -8,28 +8,30 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.json.*;
 
-import Communication.ServerSocket;
+import Communication.CommunicationField;
+import Communication.Server_Socket;
 import DirectoryFacilitator.DirectoryFacilitator;
 import Generation.SILGenerator;
 import MService.*;
 import Ontology.*;
 import OrdersManagement.*;
+import ProductManagement.Product;
 import ProductManagement.ProductionOrder;
 import ResourceManagement.*;
 import Workshop.LayoutMap;
 import SIL.*;
 
-public  class Initialization {
+public  class Initialization{
 	//Attributes  
 	public static boolean isActive= false;
 	public static ConcurrentHashMap<String,ServiceOntology> servOntologies = new ConcurrentHashMap<String,ServiceOntology>(); // these are synchronized collections better than hashtable
 	public static ConcurrentHashMap<String, OrderManager> orderManagerDict=  new ConcurrentHashMap<String, OrderManager>(); //List of Orders
 	public static ArrayList<ResourceHolon> resourceCloud = new ArrayList<ResourceHolon>();
-	public static final int numberOFPallets= 30;
 	public static ArrayList<MService> mServices= new ArrayList<>();
 	public static DirectoryFacilitator df;
 	public static SILConnexion commField;
-	public static SIL sil;
+	public static ArrayList<Product> products = new ArrayList<Product>();
+	public static SIL sil; 
 
 	//Methods
 	public static String readFileJSON(String file) {
@@ -48,7 +50,7 @@ public  class Initialization {
 		}
 		return chaine;
 	}
-
+	
 	public static void initializeResources(JSONObject obj) throws JSONException {
 		//Resources
 		JSONArray resources = obj.getJSONArray("resources");
@@ -224,10 +226,20 @@ public  class Initialization {
 
 			}
 		}
-
 	}
 
-	public static void initializeProducts(JSONObject obj) throws JSONException {}
+	public static void initializeProducts(JSONObject obj) throws JSONException {
+		JSONArray prdcts = obj.getJSONArray("Products");
+		for (int m = 0; m < prdcts.length(); m++) {
+			JSONObject p_obj = (JSONObject) prdcts.get(m);
+			int id = p_obj.getInt("id");
+			String name = p_obj.getString("name");
+			int x = p_obj.getInt("x");
+			int y = p_obj.getInt("y");
+			Product p = new Product(id, name, x, y);
+		    products.add(p);	
+		}
+	}
 
 	public static void initializeSystems(String scenario) throws JSONException, IOException {
 		//String scenario = readFileJSON("data/scenario.json");
@@ -250,19 +262,25 @@ public  class Initialization {
 		System.out.print("  ****  Assciate SIL to resources ");
 		SILGenerator sil_gen = new  SILGenerator(resourceCloud);
         System.out.println(" Done ! ****");
-		System.out.print("Layout Initiation");
+		System.out.print("**** Layout Initiation ****");
 		LayoutMap layout = new LayoutMap();
 		File f = new File("data/Layout.txt");
-		System.out.println(" : Done !");
 		layout.loadLAyout(f);
+		System.out.println(" : Done !");
 
-		System.out.print("Transporters Initilization");
+		System.out.print(" ***** Transporters Initilization ");
 		HashSet<Transporter> transporterCloud = new HashSet<Transporter>();
-		for(int i=1; i<=numberOFPallets; i++){
-			Transporter pallet = new Transporter("Unknown",null, i); 
-			transporterCloud.add(pallet);
+		for(int i=0; i<1; i++){
+			Transporter transporter = new Transporter("Unknown",null, i); 
+			transporterCloud.add(transporter);
 		}
-		System.out.println(" Done!");
+		System.out.println(" Done! ****");
+		System.out.print("***** Prodcuts Initialization ");
+		initializeProducts(obj);
+		for (int i = 0; i < products.size(); i++) {
+			System.out.println("Product : "+products.get(i).getName()+" Done!");
+		}
+		System.out.println(" Done!  ****");
 		System.out.print("Orders Initialization");
 		String po = readFileJSON("data/ProductionOrder"
 				+ ".json");
@@ -272,15 +290,19 @@ public  class Initialization {
 	}
 
 	//Main
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) throws JSONException, IOException{
 		
-		String fileContent = readFileJSON("data/scenario.json");
+		String fileContent = readFileJSON("data/new_scenario.json");
 		initializeSystems(fileContent);
-       
-		/*
-		 ServerSocket sohms_server = new ServerSocket();
-		 sohms_server.start();
-		*/
+  
+		Server_Socket sohms_server = new Server_Socket();
+		
+		sohms_server.start();
+		
+	    CommunicationField comm_semFlix = new CommunicationField();
+		
+		
+	
 	}	
 }
 

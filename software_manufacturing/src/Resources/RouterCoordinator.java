@@ -26,7 +26,7 @@ public class RouterCoordinator extends Thread{
 	public RouterCoordinator(ResourceHolon rh){
 			this.rh = rh;
 			this.requestInbox = Collections.synchronizedList(new ArrayList<Task_RH>()); // Synchronizes the acces to  this ArrayList. Must synchronize if iterated
-		}
+	}
 	//PUBLIC METHODS-------------------------------
 		@Override
 	public void run(){
@@ -82,6 +82,7 @@ public class RouterCoordinator extends Thread{
 							if (rh.getRoh().getAssociatedRH() instanceof BufferedRH){
 								//System.out.println("== ROH_Behavior Transfert par défaut demandé palette "+transporter._RFID+" à ressource "+rh.getName()+", considéré BufferedRH");
 							BufferedRH rh2 = (BufferedRH)(rh.getRoh().getAssociatedRH());
+					   //     ResourceHolon rh3 = rh.getRoh().getAssociatedRH();
 							//check capacity
 								while(!(rh.getRoh().getNumOfCurrentExecutions()<rh2.getCapacity())){
 								try {
@@ -115,10 +116,10 @@ public class RouterCoordinator extends Thread{
 						//System.out.println("++  RouterCoordinator "+rh.getName()+" rh.roh.numOfCurrentExecutions="+rh.roh.numOfCurrentExecutions);
 						
 						((ReactiveRouter_ROH_Behavior)(rh.getRoh().getBehavior())).requestResult= request.getSecond();
-																			
+						((ProductHolon) (rh.getRoh().getBehavior()).						
 							// Update new position of the Pallet ( confirmed by the SIL)
 						 //System.out.println("-- RouterCoordinator "+rh.getName()+"  "+client.associatedPallet);
-						 client.getAssociatedResource().upDatePosition(finalPort); 
+						 client).getAssociatedResource().upDatePosition(finalPort); 
 						 //System.out.println("-- RouterCoordinator "+rh.getName()+"  getsecond true service notify");
 						
 						request.getFirst().service.notify(); // notify product thread that it is finished
